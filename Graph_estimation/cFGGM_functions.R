@@ -473,46 +473,4 @@ FGGReg_cov_estimation <- function(scores, # functional score on a defined basis,
   )
 }
 
-            covariates = NULL,       #covariates to regress on
-            scr = TRUE, # optional screening to speed up
-            gamma = NULL, #Person correlation threshold for the screening
-            lambda_mean = NULL, #Penalization term in the Lasso for the mean
-            lambda_mean_type = "1se", # or "min"
-            lambda_prec = NULL,
-            lambda_prec_type = "1se", # or "min"
-            weight = 1.1, #Multiplicative factor for the penalization term when prior knowledgw is not available
-            asparse = 0.75, # The relative weight to put on the `1-norm in sparse group lasso
-            verbose = FALSE,
-            eps = 1e-08) {
-    
-        if (verbose) {
-        cat("Estimating the mean \n")
-        }
-        res_mean_reg <- GGReg_mean_estimation(x=x, covariates = covariates, lambda_mean=lambda_mean, lambda_mean_type=lambda_mean_type,  verbose = verbose, eps = eps)
-        if (verbose) {
-        cat("Done estimating the mean \n")
-        }
-        # Z0 = scale(res_mean_reg$z, center = TRUE, scale = TRUE) try and remove the scaling of the outcome
-        Z0 <-res_mean_reg$z
-        if (verbose) {
-        cat("Estimating the precision matrix \n")
-        }
-        res_cov_reg <- GGReg_cov_estimation (Z0=Z0, known_ppi = known_ppi, covariates = covariates,
-                                     scr = scr, gamma = gamma, lambda_prec=lambda_prec,lambda_prec_type=lambda_prec_type,
-                                     weight = weight, asparse = asparse, 
-                                     verbose = verbose, eps = eps)
-
-        if (verbose) {
-        cat("Done estimating the precision matrix \n")
-        }
-        return(
-         list(
-            z = res_mean_reg$z,
-            Cov_effect = res_mean_reg$Cov_effect,
-            deltas = res_cov_reg$Delta,
-            Sigma_hat = res_cov_reg$Sigma_hat,
-            Dic_Delta_hat = res_cov_reg$Dic_Delta_hat
-         )
-        )
-
-    }
+ 
