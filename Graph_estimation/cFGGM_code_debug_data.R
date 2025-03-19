@@ -15,6 +15,8 @@ library(stabs)
 func.path <- "/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Previous_litt/Boxin_Zhao_FGM_Neighboorhood/Functions"
 save.path <- "/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Previous_litt/Boxin_Zhao_FGM_Neighboorhood/Simulations_with_other_method_comparison/Model_B"
 runtime.path <- "/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Previous_litt/Boxin_Zhao_FGM_Neighboorhood/Simulations_with_other_method_comparison/Model_B"
+my.func.path <- "/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Graph_estimation"
+
 
 # Packages
 library(fda)
@@ -41,6 +43,7 @@ source(paste(func.path,"FPCA.score.R", sep="/"))    # Computing FPCA scores
 source(paste(func.path,"bases.func.R", sep="/"))    # Basis functions for FPCA
 source(paste(func.path,"B.prelim.func.R", sep="/")) # For Model B generation
 source(paste(func.path,"ProxAlg_FGM.R", sep="/"))   # FGLasso
+source(paste(my.func.path,"cFGGM_functions_two_groups.R", sep="/"))   # my fun
 
 total.time.start <- proc.time()
 
@@ -134,7 +137,15 @@ full_data <- cbind(scores,covariates)
 save(full_data,lambdas.gX, G.true, M, p, n, tau, thres.ctrl, tol.abs, tol.rel, L, file = "cFGGM_code_debug_data.RData")
 
 
-res <- FGGReg_diff_two_groups(scores, # functional score on a defined basis, nrow: subjects; ncol: functions*n_basis.
+source(paste(my.func.path,"cFGGM_functions_two_groups.R", sep="/"))   # my fun
+
+library(doParallel)
+
+# Detect available cores and register them
+numCores <- detectCores() - 1  # Use all but one core
+cl <- makeCluster(numCores)
+registerDoParallel(cl)
+res_par <- FGGReg_diff_two_groups(scores, # functional score on a defined basis, nrow: subjects; ncol: functions*n_basis.
                                       n_basis = 5, #Number of bases considered 
                                       covariates  = covariates, #Additional covariates to regress on
                                       L = 100, # How many penalization term in the Lasso to try
@@ -143,3 +154,7 @@ res <- FGGReg_diff_two_groups(scores, # functional score on a defined basis, nro
                                       tol.abs =1e-4 ,
                                       tol.rel = 1e-4,
                                       eps = 1e-08)
+stopCluster(cl)
+
+
+
