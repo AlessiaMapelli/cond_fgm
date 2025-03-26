@@ -77,8 +77,9 @@ def construct_precision_theta(p,m, g):
         theta[i[0]*m:(i[0]+1)*m, i[1]*m:(i[1]+1)*m] = construct_theta_subblocks(m)
         theta[i[1]*m:(i[1]+1)*m, i[0]*m:(i[0]+1)*m] = construct_theta_subblocks(m) 
 
-    while delta <= np.max(np.sum(abs(theta -np.eye(m*p)), axis=0)):
+    while delta <= np.max(np.sum(abs(theta -np.eye(m*p)), axis=0)):   #non è corretta questa condizione qui
         # print(delta, np.max(np.sum(abs(theta -np.eye(m*p)), axis=0)))
+        #while delta <= np.max(np.sum(abs(theta -np.eye(m*p)*delta), axis=0)): 
         delta += 1
 
     theta =  theta + np.eye(m*p)*(delta-1)
@@ -264,7 +265,6 @@ sigma_g1 = np.linalg.inv(tp_g1)
 
 d, csi_pop, csi_group = fdata_sim(n_sub1,n_sub2,p,m , freq,time,sigma, sigma_g1)   #da risistemare
 
-# d, csi = func_data(time, freq, p, 0, sigma)
 print('csi pop', csi_pop.shape)
 print('csi group', csi_group.shape)
 print('data', d.shape)
