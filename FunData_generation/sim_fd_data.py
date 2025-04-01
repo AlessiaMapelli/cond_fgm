@@ -145,7 +145,7 @@ def func_data(t, freq_band, p, mu, sigma):
     """
     fb_vec = create_fourier_basis(t,freq_band).T   #NB non ottimale la generazione della base a ogni dato funzionale generato 
     # print(fb_vec.shape)
-    csi_vec = define_func_score(p,len(freq_band)*2,mu,sigma) 
+    csi_vec = define_func_score(p,len(freq_band)*2,mu,sigma)  #len(freq_band)*2 = m, da aggiungere
     # print(csi_vec.shape)
     sm = np.matmul(fb_vec, (csi_vec))
     return sm.T, csi_vec
@@ -206,25 +206,25 @@ par['n_sub1'] = n_sub1
 par['n_sub2'] = n_sub2
 par['n_sub'] = n_sub
 
-# np.save("conditional_neurofgm/sim_data_50sub/parameters", par)
+np.save("conditional_neurofgm/sim_data_50sub/parameters", par)
 
 
 g = construct_graph(p, n_nodes_active_pop)
-#np.savetxt('conditional_neurofgm/sim_data_50sub/adj_pop.txt', np.array(list(g.edges)).astype(int), fmt='%i')
+np.savetxt('conditional_neurofgm/sim_data_50sub/adj_pop.txt', np.array(list(g.edges)).astype(int), fmt='%i')
 
 # print(a)
 nx.draw_networkx(g, with_labels = True)
-#plt.savefig('conditional_neurofgm/sim_data_50sub/graph_pop.png')
-# plt.show()
+plt.savefig('conditional_neurofgm/sim_data_50sub/graph_pop.png')
+plt.show()
 plt.close()
 
 
 
 tp = construct_precision_theta(p,m,g)
-#np.savetxt('conditional_neurofgm/sim_data_50sub/theta_pop.txt', tp)
+np.savetxt('conditional_neurofgm/sim_data_50sub/theta_pop.txt', tp)
 plt.imshow(tp)
-#plt.savefig('conditional_neurofgm/sim_data_50sub/theta_pop.png')
-# plt.show()
+plt.savefig('conditional_neurofgm/sim_data_50sub/theta_pop.png')
+plt.show()
 plt.close()
 
 
@@ -232,35 +232,35 @@ plt.close()
 print(np.all(np.linalg.eigvals(tp) > 0))
 sigma = np.linalg.inv(tp)
 
-# plt.imshow(sigma)
-# plt.show()
-# plt.close()
+plt.imshow(sigma)
+plt.show()
+plt.close()
 
 
 g_diff = construct_graph(p, n_nodes_diff_group)
 while len(np.intersect1d(list(g.nodes()), list(g_diff.nodes()))) != 0:
     g_diff = construct_graph(p, n_nodes_diff_group)
 
-#np.savetxt('conditional_neurofgm/sim_data_50sub/adj_group.txt', np.array(list(g_diff.edges)).astype(int), fmt='%i')
+np.savetxt('conditional_neurofgm/sim_data_50sub/adj_group.txt', np.array(list(g_diff.edges)).astype(int), fmt='%i')
 
 nx.draw_networkx(g_diff, with_labels = True, edge_color = 'r')
-#plt.savefig('conditional_neurofgm/sim_data_50sub/graph_group.png')
-# plt.show()
+plt.savefig('conditional_neurofgm/sim_data_50sub/graph_group.png')
+plt.show()
 plt.close()
    
 
 tp_g1 = construct_precision_theta(p,m,g_diff)
-#np.savetxt('conditional_neurofgm/sim_data_50sub/theta_group.txt', tp_g1)
+np.savetxt('conditional_neurofgm/sim_data_50sub/theta_group.txt', tp_g1)
 plt.imshow(tp_g1)
-#plt.savefig('conditional_neurofgm/sim_data_50sub/theta_group.png')
-# plt.show()
+plt.savefig('conditional_neurofgm/sim_data_50sub/theta_group.png')
+plt.show()
 plt.close()
 
 print(np.all(np.linalg.eigvals(tp_g1) > 0))
 sigma_g1 = np.linalg.inv(tp_g1)
-# plt.imshow(sigma_g1)
-# plt.show()
-# plt.close()
+plt.imshow(sigma_g1)
+plt.show()
+plt.close()
 
 
 d, csi_pop, csi_group = fdata_sim(n_sub1,n_sub2,p,m , freq,time,sigma, sigma_g1)   #da risistemare
@@ -269,8 +269,8 @@ print('csi pop', csi_pop.shape)
 print('csi group', csi_group.shape)
 print('data', d.shape)
 
-# for i in range(n_sub):
-#     # np.save("conditional_neurofgm/sim_data_50sub/scores_p_"+str(i), csi_pop[:,:,i])
-#     # np.save("conditional_neurofgm/sim_data_50sub/fd_data_"+str(i), d[:,:, i])
-#     if i < n_sub1:
-            # np.save("conditional_neurofgm/sim_data_50sub/scores_g_"+str(i), csi_group[:,:,i])
+for i in range(n_sub):
+    # np.save("conditional_neurofgm/sim_data_50sub/scores_p_"+str(i), csi_pop[:,:,i])
+    # np.save("conditional_neurofgm/sim_data_50sub/fd_data_"+str(i), d[:,:, i])
+    if i < n_sub1:
+            np.save("conditional_neurofgm/sim_data_50sub/scores_g_"+str(i), csi_group[:,:,i])
