@@ -1,11 +1,19 @@
 setwd("/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Simulation_studies")
 rm(list=ls(all=TRUE))
 
-library(parallel)
-library(doParallel)
-library(foreach)
-#install.packages("rBayesianOptimization")
-library(rBayesianOptimization)
+# List of required libraries
+required_libraries <- c("parallel", "doParallel", "foreach", "rBayesianOptimization")
+
+# Check and install missing packages
+for (lib in required_libraries) {
+  if (!require(lib, character.only = TRUE)) {
+    message(paste("Installing missing package:", lib))
+    install.packages(lib, dependencies = TRUE)
+    library(lib, character.only = TRUE)
+  } else {
+    message(paste("Package", lib, "is already installed."))
+  }
+}
 
 data.path <- "/group/diangelantonio/users/alessia_mapelli/Brain_simulations/Sim_1"
 func.path <- "/group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Graph_estimation"
@@ -28,16 +36,14 @@ covariates$group <- as.factor(covariates$group)
 full_data <- cbind(covariates,scores)
 
 
-numCores <- detectCores() - 1  # Use all but one core
-cl <- makeCluster(numCores)
+cl <- makeCluster(16)
 registerDoParallel(cl)
 
 L = 10
 K = 5
 thres.ctrl = c(0, 0.2, 0.4, 0.8, 1.2, 1.6, 2.0)
-start <- Sys.time()
-G.mat <- 
-  FGGReg_diff_two_groups_SCV_random_search_p1(scores, # functional score on a defined basis, nrow: subjects; ncol: functions*n_basis.
+
+G.mat <- FGGReg_diff_two_groups_SCV_bayes_search(scores, # functional score on a defined basis, nrow: subjects; ncol: functions*n_basis.
                                          n_basis = n_basis, #Number of bases considered 
                                          covariates  = covariates, #Additional covariates to regress on
                                          L = L, # How many penalization term in the Lasso to try
@@ -47,17 +53,11 @@ G.mat <-
                                          tol.abs =1e-4 ,
                                          tol.rel = 1e-4,
                                          eps = 1e-08,
-                                         name_log= paste(save.path,"/logs/try0104_VDM", sep=""),
-                                         name_save = paste(save.path,"/results/try0104_p1", sep=""))
-Sys.time() - start
-save(G.mat, file = paste(save.path,"res_0104_VDM.RData", spe="/"))
+                                         name_log= paste(save.path,"/logs/try0104_VDM", sep=""))
+
+save(G.mat, file = paste(save.path,"res_0104_Bayes_param.RData", spe="/"))
 stopCluster(cl)
 
 
 
 print( Sys.time() - start )
-
-
-
-
-
