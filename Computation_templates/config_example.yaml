@@ -10,7 +10,7 @@ dim_red_basis_number: 5  # number of fPC to retain
 
 
 # === Input and Output Paths ===
-input_path: /group/diangelantonio/users/alessia_mapelli/conditional_neurofgm/Computation_templates/Parallel_computation/V2/example1.RData
+input_path: example1.RData
 #RData file containing the score data to be analyzed saved as scores_df and the covraiates to be included in the model as covariates_df
 #Note: 
 # - the covariates_df need to be in a data.frame format with the correct type definition for each covariate (e.g. factor for categorical variables)

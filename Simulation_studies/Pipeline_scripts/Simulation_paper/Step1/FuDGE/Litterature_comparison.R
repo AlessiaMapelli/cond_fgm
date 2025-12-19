@@ -173,6 +173,7 @@ for (lambda.ind in c(1:length(lambda.v.fudge)) ){
                                ThetaY[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
       pop <- frobenius.norm(ThetaX[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
       group <- frobenius.norm(ThetaY[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
+      # SAVE THIS 
       if (diff>0.02){ #I would change to zero
         Edgeshat[i,j] <- 1
       }

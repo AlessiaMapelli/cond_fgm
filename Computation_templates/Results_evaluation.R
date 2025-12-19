@@ -44,6 +44,9 @@ for(j in 1: num_nodes){
 
 G.our.symm = list()
 G.our.symm.weighted = list()
+G.our.symm.warning= list()
+G.our.weighted= list()
+
 
 for(i in 1:n_groups){
   G.cov <- G.our[,(num_nodes*(i-1) +1):(num_nodes*i)]
@@ -93,7 +96,7 @@ for(i in 1:n_groups){
 
 
   if(i !=1){
-    G.cov.simm.weighted <- matrix(NA, nrow = num_nodes, ncol = num_nodes)
+    G.cov.weighted <- matrix(NA, nrow = num_nodes, ncol = num_nodes)
     for(j in 1: num_nodes){
       for(k in 1: num_nodes){
         if(G.cov[j,k]){
@@ -101,17 +104,53 @@ for(i in 1:n_groups){
           beta.g2.forbs <- norm(P.values[[k]] + P.values[[k+num_nodes]], "F")
           if(P.frob[[k]] == 0){
             cat("Warning: Zero norm at denominator. Setting to the numerator value")
-            G.cov.simm.weighted[j,k] <- beta.g2.forbs
+            G.cov.weighted[j,k] <- beta.g2.forbs
           }else{
-            G.cov.simm.weighted[j,k] <- beta.g2.forbs/(P.frob[[k]])
+            G.cov.weighted[j,k] <- beta.g2.forbs/(P.frob[[k]])
           }
         }
       }
     }
-
-
+    G.cov.simm.weighted <- matrix(NA, nrow = num_nodes, ncol = num_nodes)
+    G.cov.simm.warning <- matrix(NA, nrow = num_nodes, ncol = num_nodes)
+    for (j in 1:(num_nodes - 1)) {
+      for (k in (j + 1):num_nodes) {
+        if(G.cov.simm[j,k]){
+          load(paste(output_path, name_output,"_" ,j, "coeff.rda", sep=""))
+          beta.g2.forbs.jk <- norm(P.values[[k]] + P.values[[k+num_nodes]], "F")
+          if(P.frob[[k]] == 0){
+            cat("Warning: Zero norm at denominator. Setting to the numerator value")
+            ratio.beta.forbs.jk <- beta.g2.forbs.jk
+          }else{
+            ratio.beta.forbs.jk <- beta.g2.forbs.jk/(P.frob[[k]])
+          }
+          load(paste(output_path, name_output,"_" ,k, "coeff.rda", sep=""))
+          beta.g2.forbs.kj <- norm(P.values[[j]] + P.values[[j+num_nodes]], "F")
+          if(P.frob[[j]] == 0){
+            cat("Warning: Zero norm at denominator. Setting to the numerator value")
+            ratio.beta.forbs.kj <- beta.g2.forbs.kj
+          }else{
+            ratio.beta.forbs.kj <- beta.g2.forbs.kj/(P.frob[[j]])
+          }
+          if(ratio.beta.forbs.jk > 1 & ratio.beta.forbs.kj > 1){
+            G.cov.simm.warning[j,k] <- 0
+            G.cov.simm.warning[k,j] <- 0
+          } else if (ratio.beta.forbs.jk < 1 & ratio.beta.forbs.kj < 1){
+            G.cov.simm.warning[j,k] <- 0
+            G.cov.simm.warning[k,j] <- 0
+          } else{
+            G.cov.simm.warning[j,k] <- 1
+            G.cov.simm.warning[k,j] <- 1
+          }
+            G.cov.simm.weighted[j,k] <- mean(c(ratio.beta.forbs.jk, ratio.beta.forbs.kj))
+            G.cov.simm.weighted[k,j] <- mean(c(ratio.beta.forbs.jk, ratio.beta.forbs.kj))
+        }
+      }
+    }
   
   G.our.symm.weighted[[cov_names[i]]] <- G.cov.simm.weighted
+  G.our.symm.warning[[cov_names[i]]] <- G.cov.simm.warning
+  G.our.weighted[[cov_names[i]]] <- G.cov.weighted
 
   adj_df <- melt(G.cov.simm.weighted, varnames = c("Row","Col"), value.name = "Value")
   adj_df <- adj_df %>%
@@ -140,6 +179,6 @@ for(i in 1:n_groups){
 }
 
 # Save the matrix
-save(G.our.symm,G.our.symm.weighted, file = paste0(output_path, name_output, "_Adj_estimation.rda"))
+save(G.our.symm,G.our.symm.weighted,G.our.symm.warning, G.our.weighted , file = paste0(output_path, name_output, "_Adj_estimation.rda"))
 cat("Results saved to ", paste(output_path, name_output, "_Adj_estimation.rda", sep=""), "\n")
 #################################################
