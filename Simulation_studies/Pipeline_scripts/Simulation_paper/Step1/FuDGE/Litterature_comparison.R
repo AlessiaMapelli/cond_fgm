@@ -108,6 +108,8 @@ AdjMats_lambda_FuDGE <- list()
 AdjMats_lambda_FGL <- list()
 AdjMats_lambda_FFGL <- list()
 AdjMats_lambda_FFGL2 <- list()
+Theta.x.FFGL <- list()
+Theta.y.FFGL <- list()
 for (lambda.ind in c(1:length(lambda.v.fudge)) ){
   
   ################### FuDGE #########################
@@ -164,6 +166,8 @@ for (lambda.ind in c(1:length(lambda.v.fudge)) ){
   FFGL.result <- FFGL_ADMM(cov.list, n.sam, p, n_basis, lambda1.choose.ffgl, lambda2.choose)
   ThetaX <- FFGL.result$est[[1]]
   ThetaY <- FFGL.result$est[[2]]
+  Theta.x.FFGL[[lambda.ind]] <- ThetaX
+  Theta.y.FFGL[[lambda.ind]] <- ThetaY
   Edgeshat <- matrix(0, nrow=p, ncol=p)
   Edgeshat.pop <- matrix(0, nrow=p, ncol=p)
   Edgeshat.group <- matrix(0, nrow=p, ncol=p)
@@ -173,7 +177,6 @@ for (lambda.ind in c(1:length(lambda.v.fudge)) ){
                                ThetaY[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
       pop <- frobenius.norm(ThetaX[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
       group <- frobenius.norm(ThetaY[((i-1)*n_basis+1):(i*n_basis), ((j-1)*n_basis+1):(j*n_basis)])
-      # SAVE THIS 
       if (diff>0.02){ #I would change to zero
         Edgeshat[i,j] <- 1
       }
@@ -225,4 +228,7 @@ print(paste0("Computational time of: ",Sys.time() - time.start,"\n"))
 
 full_result_path = paste(output_path, name_output, "_litt_comparison", ".rda", sep ="")
 save(AdjMats_lambda_FuDGE, AdjMats_lambda_FGL,AdjMats_lambda_FFGL, AdjMats_lambda_FFGL2, file =full_result_path)
+
+full_result_path = paste(output_path, name_output, "_temp_res_FFGL", ".rda", sep ="")
+save(Theta.x.FFGL, Theta.y.FFGL, file =full_result_path)
 cat("\n Output saved to: ", full_result_path,"\n" )
