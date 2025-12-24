@@ -3,9 +3,13 @@ rm(list = ls())
 library("igraph")
 
 # Step 1. Load data
-folder = "C:\\Users\\saras\\OneDrive\ -\ unige.it\\Documenti\\network_differenziali\\conditional_neurofgm"
-path_sensors = paste0(folder, "\\EEG_dataset\\", "Position_list.Rdata")
-path_adj = paste0(folder, "\\EEG_dataset\\seed_1\\results\\", "Test1_Adj_estimation.rda")
+# folder = "C:\\Users\\saras\\OneDrive\ -\ unige.it\\Documenti\\network_differenziali\\conditional_neurofgm"
+# path_sensors = paste0(folder, "\\EEG_dataset\\", "Position_list.Rdata")
+# path_adj = paste0(folder, "\\EEG_dataset\\seed_1\\results\\", "Test1_Adj_estimation.rda")
+
+folder = ""
+path_sensors = paste0(folder, "EEG_dataset\\", "Position_list.Rdata")
+path_adj = paste0(folder, "EEG_dataset\\seed_1\\results\\", "Test1_Adj_estimation.rda")
 
 load(path_sensors)  # load pos.list
 load(path_adj)  # load AdjMat
@@ -85,14 +89,14 @@ E(net)$color <- cols[
   as.numeric(cut(w, breaks = seq(min(w), max(w), length.out = ncol+1),
                  include.lowest = TRUE))
 ]
-layout(matrix(c(1, 2), nrow = 1), widths = c(4, 1))
+layout(matrix(c(1, 2, 3), nrow = 1), widths = c(4, 0.5, 0.5))
 par(mar = c(0, 0, 0, 0))
-plot(net, layout = layMat, vertex.size = 2,
-  vertex.label.cex = 1, edge.curved = 1, margin = 0)
+plot(net, layout = layMat, vertex.size = 6,
+  vertex.label.cex = 0.8, vertex.color = "white", edge.curved = 1, margin = 0)
 # ---- Colorbar ----
-par(mar=c(2,1,2,2))
+par(fig = c(0.82, 0.85, 0.25, 0.75), new = TRUE, mar = c(2,0,2,0))
 image(
-  z = matrix(seq(min(w), max(w), length.out = ncol), ncol = 1),
+  z = t(matrix(seq(min(w), max(w), length.out = ncol), ncol = 1)),
   col = cols,
   xaxt='n',
   yaxt='n'
