@@ -1,5 +1,5 @@
 # === Input and Output Paths ===
-input_path: EEG_dataset/seed_1/Fudge_dataset.RData
+input_path: seed_1/Fudge_dataset.RData
 #RData file containing the score data to be analyzed saved as scores_df and the covraiates to be included in the model as covariates_df
 #Note: 
 # - the covariates_df need to be in a data.frame format with the correct type definition for each covariate (e.g. factor for categorical variables)
@@ -8,7 +8,7 @@ input_path: EEG_dataset/seed_1/Fudge_dataset.RData
 n_nodes: 64
 n_basis_for_dim_recustion: 5
 
-output_path: EEG_dataset/seed_1/results/
+output_path: seed_1/results/
 name_output: Test1
 
 # === Model Parameters ===

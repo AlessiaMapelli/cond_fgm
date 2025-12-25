@@ -56,8 +56,8 @@ adj_group[is.na(adj_group)] = 0
 diag(adj_group) <- 0
 
 vals <- adj_group[adj_group != 0 & !is.na(adj_group)] # Remove intermediate values
-lower_thr <- quantile(vals, probs = 0.02, na.rm = TRUE)
-upper_thr <- quantile(vals, probs = 0.97, na.rm = TRUE)
+lower_thr <- quantile(vals, probs = 0.01, na.rm = TRUE)
+upper_thr <- quantile(vals, probs = 0.99, na.rm = TRUE)
 
 adj_extreme <- adj_group
 adj_extreme[
