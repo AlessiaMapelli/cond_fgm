@@ -125,10 +125,8 @@ When covariates are included:
 
 ## Citation
 
-If you use this pipeline in your research, please cite:
-
 ```
-[Your publication details here]
+[--]
 ```
 
 ---
