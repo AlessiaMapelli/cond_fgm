@@ -108,7 +108,7 @@ This validates the results for the specified configuration.
 After completing all simulations:
 
 ```bash
-Rscript Plot_simulations_resulrs.R
+Rscript Plot_simulations_results.R
 ```
 
 This script generates all figures presented in the manuscript. 
