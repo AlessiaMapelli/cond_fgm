@@ -13,7 +13,7 @@ time.start <- Sys.time()
 input_path = config$input_path
 output_path = config$output_path
 name_output = config$name_output
-n_basis = config$n_basis_for_dim_recustion
+n_basis = config$dim_red_basis_number
 L = config$L
 K = config$K
 thres.ctrl = unlist(config$thres_ctrl)
