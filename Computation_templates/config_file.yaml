@@ -6,7 +6,7 @@ input_path: example1.RData
 # - the covariates_df can be exluded if no covariates are to be included in the model
 
 n_nodes: 10
-n_basis_for_dim_recustion: 5
+dim_red_basis_number: 5
 
 output_path: Test_computational_template/
 name_output: example
