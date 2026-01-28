@@ -72,7 +72,7 @@ for(l in 1:ncol(fpc.score)){
 colnames(fpc.score) <- names
 
 write.csv(fpc.score, paste(output_path, "fpc_scores_", name_output, ".csv", sep=""))
-scores_df <- fpc.score
+scores_df <- as.data.frame(fpc.score)
 save(scores_df, file=paste(output_path,"scores_df_", name_output, ".RData", sep=""))
 print(paste0("END: Preprocessing of the data completed in: ", Sys.time()-time.start))
 
